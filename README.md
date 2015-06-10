@@ -1,0 +1,2 @@
+# kickstarter
+exploring kickstarter data
