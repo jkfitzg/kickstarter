@@ -9,6 +9,7 @@ import pymysql as mdb
 def get_creator_activity(creator_text_only):
     # initialize for -1 so I can see where my parsing failed
     n_backed = -1
+    n_created = -1
     
     # get number of campaigns backed
     match = re.search(r'Backed\n\((\d+)\)',creator_text_only)
@@ -17,8 +18,14 @@ def get_creator_activity(creator_text_only):
     
     # this also works    
     #match = re.search('is not backing any projects',creator_text_only)
-         
-    return n_backed
+
+    # get number created
+    match = re.search(r'Created\n\((\d+)\)',creator_text_only)
+    if match:
+        n_created = int(match.group(1))
+    
+
+    return n_backed,n_created
 
 def analyze_rewards(project_text):
 
@@ -67,7 +74,7 @@ def get_time_features(unix_t_start):
     t_struct = time.localtime(unix_t_start)  
 
     # month, day of month, day of week, hour
-    return [t_struct.tm_mon, t_struct.tm_mday, t_struct.tm_wday, t_struct.tm_hour] 
+    return [t_struct.tm_year, t_struct.tm_mon, t_struct.tm_mday, t_struct.tm_wday, t_struct.tm_hour] 
 
 def calc_days_to_ship(rewards_ship_dates_str,campaign_start_unix_t):
     # I think months to reward is more useful, but low roi. leave as is. 
@@ -193,6 +200,12 @@ def concat_features(primary_key):
 
     return project_features + body_features + creator_features
 
+def shorten_category(subcategory):
+    #print subcategory
+    match = re.search('(\w*)(\/*)',subcategory)
+    if match:
+        return match.group(1)
+
 def get_project_features(con,primary_key):
     # primary_key_id 0
     # url 1
@@ -205,21 +218,25 @@ def get_project_features(con,primary_key):
     # country 8
     # location 9
     # launch time 10
-    # campaign dur
-    # title_n_words
-    # blurb_n_words
-    # Month INT,\
-    # Monday_day INT,\
-    # Week_day INT,\
-    # Hour INT,\
+    # campaign dur 11
+    # title_n_words 12
+    # blurb_n_words 13
+    # YEAR INT,\ 14
+    # Month INT,\ 15
+    # Monday_day INT,\ 16
+    # Week_day INT,\ 17
+    # Hour INT,\ 18
     project_info = []
     
     with con:
         cur = con.cursor()
-        cur.execute("SELECT Id,URL,Project_date,Pledged,Goal,Category_name,Category_slug,Currency,\
+        cur.execute("SELECT Id,URL,Project_date,Pledged,Goal,Category_slug,Category_name,Currency,\
                          Country,Location_club,Launch_time from Project_info WHERE Id = %s",primary_key)
         rows = cur.fetchall()
         project_info_pt1 = list(rows[0])
+
+        #shorten Category 
+        project_info_pt1[5] = shorten_category(project_info_pt1[5])
         
         cur.execute("SELECT Launch_time,End_time,Name,Blurb from Project_info WHERE Id = %s",primary_key)
         rows = cur.fetchall()
@@ -284,6 +301,6 @@ def get_creator_features(con,primary_key):
 
         this_soup = BeautifulSoup(retrieved_text[0][0])
         creator_text = this_soup.get_text()
-        n_backed = get_creator_activity(creator_text)
+        n_backed,n_created = get_creator_activity(creator_text)
 
-        return [n_backed]
+        return [n_backed,n_created]
