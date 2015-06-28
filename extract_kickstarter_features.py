@@ -195,10 +195,11 @@ def concat_features(primary_key):
     con = mdb.connect('localhost','root','hobbes','kickstarter')
 
     project_features = get_project_features(con,primary_key)
+    has_video = get_has_video(con,primary_key)
     body_features = get_body_features(con,primary_key,project_features[10])
     creator_features = get_creator_features(con,primary_key)
 
-    return project_features + body_features + creator_features
+    return project_features + has_video + body_features + creator_features
 
 def shorten_category(subcategory):
     #print subcategory
@@ -221,11 +222,11 @@ def get_project_features(con,primary_key):
     # campaign dur 11
     # title_n_words 12
     # blurb_n_words 13
-    # YEAR INT,\ 14
-    # Month INT,\ 15
-    # Monday_day INT,\ 16
-    # Week_day INT,\ 17
-    # Hour INT,\ 18
+    # yEAR INT,\ 14
+    # month INT,\ 15
+    # month_day INT,\ 16
+    # week_day INT,\ 17
+    # hour INT,\ 18
     project_info = []
     
     with con:
@@ -304,3 +305,12 @@ def get_creator_features(con,primary_key):
         n_backed,n_created = get_creator_activity(creator_text)
 
         return [n_backed,n_created]
+
+def get_has_video(con,primary_key):
+   with con:
+        cur = con.cursor()
+        cur.execute("SELECT Video_present from Has_video WHERE Id = %s",primary_key)
+        has_video = cur.fetchall()
+        cur.close()
+        
+        return list(has_video[0])

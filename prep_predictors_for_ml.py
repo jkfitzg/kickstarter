@@ -32,10 +32,16 @@ def make_categorical_df_from_str(predictor_df):
 	categorical_df = pd.DataFrame(binary_array,columns=np.unique(predictor_df))
 	return categorical_df
 
-def make_categorical_df_from_num(predictor_df,col_names=None):
+def make_categorical_df_from_num(predictor_df,col_names=None,append_str=[]):
 	from sklearn.preprocessing import OneHotEncoder
 	enc = OneHotEncoder()
 
 	categorical_array = enc.fit_transform(predictor_df).toarray()
 	categorical_df = pd.DataFrame(categorical_array,columns=col_names)
+
+	if append_str:
+		df_col_names = list(categorical_df.columns)
+		new_col_names = [str(c)+append_str for c in df_col_names]
+		categorical_df.columns = new_col_names
+
 	return categorical_df
