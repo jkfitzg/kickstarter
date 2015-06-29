@@ -99,37 +99,3 @@ def plot_probability_funding_freq(subset_predictor_df,outcomes_df,\
     #saveas_path = '/Users/jamie/insight_data/figures/'
     #plt.savefig(saveas_path + feature_name +' success rate and hist.png',bbox_inches='tight',dpi=400) 
 
-def plot_feature_importances(feature_importances,X_cols,n_top):
-    #plt.rcParams.update({'font.size': 10})
-
-    fig = plt.figure(figsize=(5*1.618,5))
-    feature_importance_is = np.argsort(feature_importances)
-    feature_importance_is_decending = feature_importance_is[-1::-1]
-    plt.title("Feature importances")
-    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
-           color="b", align="center")
-    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
-    plt.xlim([-1, n_top])
-    plt.xlabel('Feature')
-    plt.ylabel('Feature importance (Gini importance)')
-    plt.show()
-    saveas_path = '/Users/jamie/insight_data/figures/'
-    plt.savefig(saveas_path + 'feature_importances.png',bbox_inches='tight',dpi=400) 
-
-
-def plot_coefficients(feature_importances,X_cols,n_top):
-    #plt.rcParams.update({'font.size': 10})
-
-    fig = plt.figure(figsize=(5*1.618,5))
-    feature_importance_is = np.argsort(feature_importances)
-    feature_importance_is_decending = feature_importance_is[-1::-1]
-    plt.title("Feature importances")
-    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
-           color="b", align="center")
-    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
-    plt.xlim([-1, n_top])
-    plt.xlabel('Logistic regression coefficients')
-    plt.ylabel('Coefficient')
-    plt.show()
-    saveas_path = '/Users/jamie/insight_data/figures/'
-    plt.savefig(saveas_path + 'coefficients.png',bbox_inches='tight',dpi=400) 

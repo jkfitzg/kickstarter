@@ -80,7 +80,7 @@ def plot_roc_with_cv(classifier):
         mean_tpr += interp(mean_fpr, fpr, tpr)
         mean_tpr[0] = 0.0
         roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.2f)' % (i, roc_auc))
+        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.3f)' % (i, roc_auc))
 
     plt.plot([0, 1], [0, 1], '--', color=(0.6, 0.6, 0.6), label='Luck')
 
@@ -88,7 +88,7 @@ def plot_roc_with_cv(classifier):
     mean_tpr[-1] = 1.0
     mean_auc = auc(mean_fpr, mean_tpr)
     plt.plot(mean_fpr, mean_tpr, 'k--',
-             label='Mean ROC (area = %0.2f)' % mean_auc, lw=2)
+             label='Mean ROC (area = %0.3f)' % mean_auc, lw=2)
 
     plt.xlim([-0.05, 1.05])
     plt.ylim([-0.05, 1.05])
@@ -97,3 +97,40 @@ def plot_roc_with_cv(classifier):
     plt.title('Receiver operating characteristic')
     plt.legend(loc="lower right")
     plt.show()
+
+def plot_feature_importances(feature_importances,X_cols,n_top,f_name_pre):
+    #plt.rcParams.update({'font.size': 10})
+
+    fig = plt.figure(figsize=(5*1.618,5))
+    feature_importance_is = np.argsort(feature_importances)
+    feature_importance_is_decending = feature_importance_is[-1::-1]
+    plt.title("Feature importances")
+    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
+           color="b", align="center")
+    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
+    plt.xlim([-1, n_top])
+    plt.xlabel('Feature')
+    plt.ylabel('Feature importance (Gini importance)')
+    plt.show()
+    saveas_path = '/Users/jamie/insight_data/figures/'
+    plt.savefig(saveas_path + f_name_pre + ' feature_importances.png',bbox_inches='tight',dpi=400) 
+
+
+def plot_coefficients(feature_importances,X_cols,n_top,f_name_pre):
+    #plt.rcParams.update({'font.size': 10})
+
+    fig = plt.figure(figsize=(5*1.618,5))
+    feature_importance_is = np.argsort(feature_importances)
+    feature_importance_is_decending = feature_importance_is[-1::-1]
+    plt.title("Feature importances")
+    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
+           color="b", align="center")
+    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
+    plt.xlim([-1, n_top])
+    plt.xlabel('Feature')
+    plt.ylabel('Coefficient')
+    plt.show()
+    saveas_path = '/Users/jamie/insight_data/figures/'
+    plt.savefig(saveas_path + f_name_pre+' coefficients.png',bbox_inches='tight',dpi=400) 
+
+
