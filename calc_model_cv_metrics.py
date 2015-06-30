@@ -99,18 +99,17 @@ def plot_roc_with_cv(classifier):
     plt.show()
 
 def plot_feature_importances(feature_importances,X_cols,n_top,f_name_pre):
-    #plt.rcParams.update({'font.size': 10})
+    plt.rcParams.update({'font.size': 8})
 
-    fig = plt.figure(figsize=(5*1.618,5))
+    fig = plt.figure(figsize=(6.875 ,  6.7125))
     feature_importance_is = np.argsort(feature_importances)
-    feature_importance_is_decending = feature_importance_is[-1::-1]
     plt.title("Feature importances")
-    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
+    plt.barh(range(n_top), feature_importances[feature_importance_is[0:n_top]],
            color="b", align="center")
-    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
-    plt.xlim([-1, n_top])
-    plt.xlabel('Feature')
-    plt.ylabel('Feature importance (Gini importance)')
+    plt.yticks(range(n_top), X_cols[feature_importance_is[0:n_top]],fontsize=8)
+    plt.ylim([-1, n_top])
+    plt.ylabel('Feature')
+    plt.xlabel('Feature importance (Gini importance)')
     plt.show()
     saveas_path = '/Users/jamie/insight_data/figures/'
     plt.savefig(saveas_path + f_name_pre + ' feature_importances.png',bbox_inches='tight',dpi=400) 
@@ -121,14 +120,13 @@ def plot_coefficients(feature_importances,X_cols,n_top,f_name_pre):
 
     fig = plt.figure(figsize=(5*1.618,5))
     feature_importance_is = np.argsort(feature_importances)
-    feature_importance_is_decending = feature_importance_is[-1::-1]
     plt.title("Feature importances")
-    plt.bar(range(n_top), feature_importances[feature_importance_is_decending[0:n_top]],
+    plt.barh(range(n_top), feature_importances[feature_importance_is[0:n_top]],
            color="b", align="center")
-    plt.xticks(range(n_top), X_cols[feature_importance_is_decending[0:n_top]],rotation='vertical')
-    plt.xlim([-1, n_top])
-    plt.xlabel('Feature')
-    plt.ylabel('Coefficient')
+    plt.yticks(range(n_top), X_cols[feature_importance_is[0:n_top]],fontsize=8)
+    plt.ylim([-1, n_top])
+    plt.ylabel('Feature')
+    plt.xlabel('Coefficient')
     plt.show()
     saveas_path = '/Users/jamie/insight_data/figures/'
     plt.savefig(saveas_path + f_name_pre+' coefficients.png',bbox_inches='tight',dpi=400) 
